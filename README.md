@@ -4,6 +4,22 @@ SNHttpRequest
 
 `SNHttpRequest` is a thin wrapper around `NSURLSession` in Swift to simplify HTTP requests.
 
+## Requirements
+
+- iOS 11.0+ 
+- Xcode 10.2+
+- Swift 5+
+
+## Installation
+
+### CocoaPods
+
+[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate Alamofire into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+pod 'SNHttpRequest'
+```
+
 ## Features
 
 - Convenient Closure APIs
