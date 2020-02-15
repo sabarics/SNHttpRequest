@@ -35,6 +35,10 @@ import SNHttpRequest
 
 ## Examples
 
+### HTTP Methods
+
+All the common HTTP methods are avalaible as convenience methods as well.
+
 ### GET
 
 The most basic request. By default an Data object will be returned for the response.
@@ -68,11 +72,6 @@ RequestService.getRequest(url: "https://google.com") { (response) in
         }
     }
 ```
-
-
-### HTTP Methods
-
-All the common HTTP methods are avalaible as convenience methods as well.
 
 ### POST
 
