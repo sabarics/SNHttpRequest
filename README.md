@@ -36,4 +36,58 @@ RequestService.getRequest(url: "https://google.com") { (response) in
                 print(error)
             }
         }
+  
+  RequestService.getRequest(url: "your endpoint", token: "your token", authType: .bearerToken) { (response) in
+            switch response
+            {
+            case .Success(let response):
+                print(response)
+                
+            case .ApiError(let apiError):
+                print(apiError)
+                
+            case .Error(let error):
+                print(error)
+            }
+        }
+    }
+```
+
+
+### HTTP Methods
+
+All the common HTTP methods are avalaible as convenience methods as well.
+
+### POST
+
+```swift
+let postData = ["param1":"value1","param2":"value2"]
+RequestService.postRequest(url: "your endpoint", postData: postData, method: .post) { (response) in
+            switch response
+            {
+            case .Success(let response):
+                print(response)
+                
+            case .ApiError(let apiError):
+                print(apiError)
+                
+            case .Error(let error):
+                print(error)
+            }
+        }
+        
+ RequestService.postRequest(url: "your endpoint",token: "token",authType: .bearerToken, postData: postData, method: .post) { (response) in
+            switch response
+            {
+            case .Success(let response):
+                print(response)
+                
+            case .ApiError(let apiError):
+                print(apiError)
+                
+            case .Error(let error):
+                print(error)
+            }
+        }
+
 ```
