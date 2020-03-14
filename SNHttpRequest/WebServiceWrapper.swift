@@ -10,7 +10,7 @@ import Foundation
 public struct RequestService {
     
     
-    /// Create shared instance for ZuperApi struct
+    /// Create shared instance for Api struct
     public static let shared = RequestService()
     
     //1 creating the session
@@ -199,7 +199,7 @@ public struct RequestService {
                         completion(nil)
                     }
                 })
-                }.resume()
+            }.resume()
         }
     }
 }
