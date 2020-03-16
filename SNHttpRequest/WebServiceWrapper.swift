@@ -18,9 +18,9 @@ public struct RequestService {
     
     
     /// Create typealies for api response as [String:Any]
-    public typealias JSON = (Result<[String:Any]?>) -> ()
+    public typealias JSON = (Results<[String:Any]?>) -> ()
     
-    public typealias JSONTaskCompletionHandler = (Result<JSON>) -> ()
+    public typealias JSONTaskCompletionHandler = (Results<JSON>) -> ()
     
     public static func getRequest(url:String ,token: String? = nil,authType: AuthType? = nil, completionHandler completion: @escaping JSONTaskCompletionHandler) {
         
@@ -85,7 +85,7 @@ public struct RequestService {
         }
     }
     
-    public static func postRequest(url:String ,token: String? = nil,authType: AuthType? = nil,postData:[String:Any],method:MethodType, completionHandler completion: @escaping JSONTaskCompletionHandler)  {
+    public static func postRequest(url:String ,token: String? = nil,authType: AuthType? = nil,postData:[String:Any],method:MethodType,encoding:URLEncoding? = nil, completionHandler completion: @escaping JSONTaskCompletionHandler)  {
         
         guard let url = URL(string: url) else{
             completion(.Error(.invalidURL))
@@ -99,12 +99,17 @@ public struct RequestService {
         self.session.configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         self.session.configuration.urlCache = nil
         
-        if postData.count > 0
-        {
-            let jsonData = try? JSONSerialization.data(withJSONObject: postData)
-            request.httpBody = jsonData
+        if  encoding == .queryString {
+            request.httpBody = postData.percentEncoded()
         }
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        else{
+            if postData.count > 0
+            {
+                let jsonData = try? JSONSerialization.data(withJSONObject: postData)
+                request.httpBody = jsonData
+                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            }
+        }
         
         var task = URLSessionDataTask()
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
@@ -205,7 +210,7 @@ public struct RequestService {
 }
 
 
-public enum Result <T>{
+public enum Results <T>{
     case Success([String:Any])
     case Error(ApiResponseError)
     case ApiError([String:Any])
@@ -235,6 +240,11 @@ public enum AuthType:String{
     case none = "None"
 }
 
+public enum URLEncoding:String{
+    case queryString = "QueryString"
+    case httpBody = "httpBody"
+}
+
 func getUrlRequest(url:URL,authType:AuthType?,token:String?) -> URLRequest{
     
     var request = URLRequest(url: url)
@@ -254,4 +264,25 @@ func getUrlRequest(url:URL,authType:AuthType?,token:String?) -> URLRequest{
     return request
 }
 
+extension Dictionary {
+    func percentEncoded() -> Data? {
+        return map { key, value in
+            let escapedKey = "\(key)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+            let escapedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryValueAllowed) ?? ""
+            return escapedKey + "=" + escapedValue
+        }
+        .joined(separator: "&")
+        .data(using: .utf8)
+    }
+}
 
+extension CharacterSet {
+    static let urlQueryValueAllowed: CharacterSet = {
+        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+        let subDelimitersToEncode = "!$&'()*+,;="
+
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
+        return allowed
+    }()
+}
