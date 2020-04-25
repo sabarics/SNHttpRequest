@@ -144,7 +144,7 @@ public struct RequestService {
                             do {
                                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] {
                                     DispatchQueue.main.async {
-                                        completion(.ApiError(json as! [String : String]))
+                                        completion(.ApiError(json as [String : Any]))
                                     }
                                 }
                             } catch {
