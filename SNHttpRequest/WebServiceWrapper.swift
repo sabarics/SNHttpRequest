@@ -237,6 +237,7 @@ public enum MethodType:String{
 public enum AuthType:String{
     case bearerToken = "Bearer"
     case xAuthToken = "X-Auth-Token"
+    case authorization = "Authorization"
     case none = "None"
 }
 
@@ -255,6 +256,8 @@ func getUrlRequest(url:URL,authType:AuthType?,token:String?) -> URLRequest{
                 request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
             case .xAuthToken:
                 request.setValue("\(accessToken)", forHTTPHeaderField: "X-Auth-Token")
+            case .authorization:
+                request.setValue("\(accessToken)", forHTTPHeaderField: "Authorization")
             case .none:
                 return request
             }
