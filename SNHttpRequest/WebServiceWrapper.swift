@@ -85,7 +85,7 @@ public struct RequestService {
         }
     }
     
-    public static func postRequest(url:String ,token: String? = nil,authType: AuthType? = nil,postData:[String:Any],method:MethodType,encoding:URLEncoding? = nil, completionHandler completion: @escaping JSONTaskCompletionHandler)  {
+    public static func postRequest(url:String ,token: String? = nil,authType: AuthType? = nil,postData:[String:Any],method:MethodType,encoding:URLEncoding? = .httpBody,contentType:ContentType = .default, completionHandler completion: @escaping JSONTaskCompletionHandler)  {
         
         guard let url = URL(string: url) else{
             completion(.Error(.invalidURL))
@@ -107,7 +107,7 @@ public struct RequestService {
             {
                 let jsonData = try? JSONSerialization.data(withJSONObject: postData)
                 request.httpBody = jsonData
-                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.addValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
             }
         }
         
@@ -244,6 +244,16 @@ public enum AuthType:String{
 public enum URLEncoding:String{
     case queryString = "QueryString"
     case httpBody = "httpBody"
+}
+
+public enum ContentType : String {
+    case TEXT = "text/plain"
+    case JSON_TEXT = "text/json"
+    case IMAGE_JPEG = "image/jpeg"
+    case PDF = "application/pdf"
+    case BINARY = "application/octet-stream"
+    case MULTIPART = "multipart/form-data"
+    case `default` =  "application/json"
 }
 
 func getUrlRequest(url:URL,authType:AuthType?,token:String?) -> URLRequest{

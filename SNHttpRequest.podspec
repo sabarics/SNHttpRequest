@@ -2,7 +2,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "SNHttpRequest"
-  spec.version      = "1.0.5"
+  spec.version      = "1.0.6"
   spec.summary      = "A thin wrapper around NSURLSession in Swift to simplify HTTP requests."
   spec.description  = "SNHttpRequest is a thin wrapper around NSURLSession in Swift to simplify HTTP requests."
   spec.homepage     = "https://github.com/sabarics/SNHttpRequest"
