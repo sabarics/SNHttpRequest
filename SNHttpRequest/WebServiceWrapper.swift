@@ -65,7 +65,7 @@ public struct RequestService {
                             do {
                                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] {
                                     DispatchQueue.main.async {
-                                        completion(.ApiError(json as! [String : String]))
+                                        completion(.ApiError(json as [String : Any]))
                                     }
                                 }
                             } catch {
@@ -75,9 +75,24 @@ public struct RequestService {
                             completion(.Error(.invalidData))
                         }
                     }
+                    else if (httpResponse.statusCode == NSURLErrorCancelled || httpResponse.statusCode == NSURLErrorTimedOut || httpResponse.statusCode == NSURLErrorCannotConnectToHost || httpResponse.statusCode == NSURLErrorNetworkConnectionLost || httpResponse.statusCode == NSURLErrorNotConnectedToInternet || httpResponse.statusCode == NSURLErrorInternationalRoamingOff || httpResponse.statusCode == NSURLErrorCallIsActive || httpResponse.statusCode == NSURLErrorDataNotAllowed)
+                    {
+                        completion(.Error(.offline))
+                    }
                     else {
-                        completion(.Error(.responseUnsuccessful))
-                        print("\(String(describing: error))")
+                        if let data = data {
+                            do {
+                                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] {
+                                    DispatchQueue.main.async {
+                                        completion(.ApiError(json as [String : Any]))
+                                    }
+                                }
+                            } catch {
+                                completion(.Error(.jsonConversionFailure))
+                            }
+                        } else {
+                            completion(.Error(.invalidData))
+                        }
                     }
                 })
             }
